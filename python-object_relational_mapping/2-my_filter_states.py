@@ -17,12 +17,22 @@ if __name__ == "__main__":
         charset="utf8"
     )
     cursor = db.cursor()
-    cursor.execute(
+
+    # Escape user input to safely handle special characters and quotes
+    searched_name = db.escape_string(sys.argv[4])
+    if isinstance(searched_name, bytes):
+        searched_name = searched_name.decode('utf-8')
+
+    # Execute SQL query using format() with the escaped input
+    query = (
         "SELECT * FROM states WHERE name = '{}' "
-        "ORDER BY states.id ASC".format(sys.argv[4])
+        "ORDER BY states.id ASC".format(searched_name)
     )
+    cursor.execute(query)
+
     rows = cursor.fetchall()
     for row in rows:
         print(row)
+
     cursor.close()
     db.close()
