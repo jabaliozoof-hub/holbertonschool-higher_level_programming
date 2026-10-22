@@ -7,7 +7,9 @@ in the states table of hbtn_0e_0_usa where name matches the argument.
 import MySQLdb
 import sys
 
+
 if __name__ == "__main__":
+    # Connect to MySQL server
     db = MySQLdb.connect(
         host="localhost",
         port=3306,
@@ -16,23 +18,21 @@ if __name__ == "__main__":
         db=sys.argv[3],
         charset="utf8"
     )
+
+    # Create a cursor object
     cursor = db.cursor()
 
-    # Escape user input to safely handle special characters and quotes
-    searched_name = db.escape_string(sys.argv[4])
-    if isinstance(searched_name, bytes):
-        searched_name = searched_name.decode('utf-8')
-
-    # Execute SQL query using format() with the escaped input
-    query = (
-        "SELECT * FROM states WHERE name = '{}' "
-        "ORDER BY states.id ASC".format(searched_name)
-    )
+    # Execute SQL query using format to insert user input
+    query = "SELECT * FROM states WHERE name = '{}' ORDER BY states.id ASC".format(sys.argv[4])
     cursor.execute(query)
 
+    # Fetch all the rows
     rows = cursor.fetchall()
+
+    # Print each row
     for row in rows:
         print(row)
 
+    # Close cursor and database connection
     cursor.close()
     db.close()
