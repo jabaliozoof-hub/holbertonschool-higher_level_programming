@@ -22,11 +22,14 @@ if __name__ == "__main__":
     # Create a cursor object
     cursor = db.cursor()
 
-    # Execute SQL query using format to insert user input
-    query = "SELECT * FROM states WHERE name = '{}' ORDER BY states.id ASC".format(sys.argv[4])
+    # Execute SQL query using format and LIKE BINARY for case-sensitive matching
+    query = (
+        "SELECT * FROM states WHERE name LIKE BINARY '{}' "
+        "ORDER BY states.id ASC".format(sys.argv[4])
+    )
     cursor.execute(query)
 
-    # Fetch all the rows
+    # Fetch all the matching rows
     rows = cursor.fetchall()
 
     # Print each row
