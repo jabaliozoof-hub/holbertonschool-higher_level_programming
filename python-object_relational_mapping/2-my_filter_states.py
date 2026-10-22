@@ -9,7 +9,6 @@ import sys
 
 
 if __name__ == "__main__":
-    # Connect to MySQL server
     db = MySQLdb.connect(
         host="localhost",
         port=3306,
@@ -18,24 +17,20 @@ if __name__ == "__main__":
         db=sys.argv[3],
         charset="utf8"
     )
-
-    # Create a cursor object
     cursor = db.cursor()
 
-    # Execute SQL query using format and LIKE BINARY for case-sensitive matching
+    # Escape single quotes to prevent SQL syntax errors on special inputs
+    safe_name = sys.argv[4].replace("'", "''")
+
     query = (
-        "SELECT * FROM states WHERE name LIKE BINARY '{}' "
-        "ORDER BY states.id ASC".format(sys.argv[4])
+        "SELECT * FROM states WHERE name = '{}' "
+        "ORDER BY states.id ASC".format(safe_name)
     )
     cursor.execute(query)
 
-    # Fetch all the matching rows
     rows = cursor.fetchall()
-
-    # Print each row
     for row in rows:
         print(row)
 
-    # Close cursor and database connection
     cursor.close()
     db.close()
